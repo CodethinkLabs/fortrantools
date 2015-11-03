@@ -20,7 +20,7 @@ def split_fortran_line_at_72(line):
     lines = [line]
     remain = line[72:]
     while len(remain)>66:
-        lines.append("     +" + remain[:66] +"\n") 
+        lines.append("     +" + remain[:66] +"\n")
         remain = remain[66:]
     if len(remain)>0:
         lines.append("     +" + remain)
@@ -37,7 +37,7 @@ def fixFortran(filename):
     for lineno in range(0,len(allLines)):
         if lineno >= len(allLines): break
         allLines[lineno] = allLines[lineno][:72]
-        while len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
+        while lineno < len(allLines) and len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
             l = allLines.pop(lineno)
             allLines[lineno-1] = allLines[lineno-1].rstrip() + l[6:72]
             print "Removed line %d and added it to the end of the preceding line"%(lineno)
