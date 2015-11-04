@@ -7,7 +7,7 @@ import re
 import sys
 from os import listdir
 from os.path import isfile, join
-from fortranUtils import split_fortran_line_at_72
+from fortranUtils import split_fortran_line_at_72, commentCharacters
 
 ###############################################################################
 # This code attempts to fix various pieces of legacy Fortran which will not
@@ -26,7 +26,7 @@ def fixFortran(filename):
 
     for lineno in range(0,len(allLines)):
         if lineno >= len(allLines): break
-        if allLines[lineno][0].lower() == 'c':
+        if allLines[lineno][0].lower() in commentCharacters:
             print "Skipping comment line %d"%lineno
             continue
         while lineno < len(allLines) and len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
