@@ -7,6 +7,7 @@ import re
 import sys
 from os import listdir
 from os.path import isfile, join
+from fortranUtils import split_fortran_line_at_72
 
 ###############################################################################
 # This script takes the output from a compilation using an existing legacy
@@ -15,16 +16,6 @@ from os.path import isfile, join
 # standard-compliant form, with the aim of making it acceptable to gfortran.
 
 # Original code by Mark Doffman, maintained by Jim MacArthur.
-
-def split_fortran_line_at_72(line):
-    lines = [line]
-    remain = line[72:]
-    while len(remain)>66:
-        lines.append("     +" + remain[:66] +"\n")
-        remain = remain[66:]
-    if len(remain)>0:
-        lines.append("     +" + remain)
-    return lines
 
 def main():
     typesAsPrints = collections.defaultdict(list)
