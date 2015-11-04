@@ -8,13 +8,10 @@ import sys
 from os import listdir
 from os.path import isfile, join
 from fortranUtils import split_fortran_line_at_72
-###############################################################################
-# This script takes the output from a compilation using an existing legacy
-# compiler such as Sun's f90 and uses its warnings as a list of places to fix
-# the source code. It will then attempt to convert it to a more
-# standard-compliant form, with the aim of making it acceptable to gfortran.
 
-# Original code by Mark Doffman, maintained by Jim MacArthur.
+###############################################################################
+# This code attempts to fix various pieces of legacy Fortran which will not
+# otherwise compile with gfortran.
 
 def fixFortran(filename):
     allLines = []
@@ -26,6 +23,9 @@ def fixFortran(filename):
     # Rejoin all lines.
     for lineno in range(0,len(allLines)):
         if lineno >= len(allLines): break
+        if allLines[lineno][0].lower() == 'c':
+            print "Skipping comment line %d"%lineno
+            continue
         allLines[lineno] = allLines[lineno][:72]
         while lineno < len(allLines) and len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
             l = allLines.pop(lineno)
@@ -34,14 +34,14 @@ def fixFortran(filename):
     print "%d lines after rejoining"%len(allLines)
 
     # Now do processing
-    initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/')
+    initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/(?P<tail>\s*,.*$)')
     lines = []
     for lineno in range(0,len(allLines)):
         line = allLines[lineno]
         m = initRegex.search(line.rstrip())
         if m:
             print "Matched old-style initializer line"
-            newLine = "      %s%s :: %s = %s\n"%(m.group('type'), m.group('kind'), m.group('ident'), m.group('value'))
+            newLine = "      %s%s :: %s = %s%s\n"%(m.group('type'), m.group('kind'), m.group('ident'), m.group('value'), m.group('tail'))
             lines.append(newLine)
         else:
             lines.append(line)
