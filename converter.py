@@ -22,11 +22,13 @@ def fixFortran(filename):
     print "%d lines read from file"%len(allLines)
     # Rejoin all lines.
     for lineno in range(0,len(allLines)):
+        allLines[lineno] = allLines[lineno][:72]
+
+    for lineno in range(0,len(allLines)):
         if lineno >= len(allLines): break
         if allLines[lineno][0].lower() == 'c':
             print "Skipping comment line %d"%lineno
             continue
-        allLines[lineno] = allLines[lineno][:72]
         while lineno < len(allLines) and len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
             l = allLines.pop(lineno)
             allLines[lineno-1] = allLines[lineno-1].rstrip() + l[6:72]
