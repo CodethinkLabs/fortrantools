@@ -13,6 +13,12 @@ from fortranUtils import split_fortran_line_at_72, commentCharacters
 # This code attempts to fix various pieces of legacy Fortran which will not
 # otherwise compile with gfortran.
 
+def isComment(line):
+    return len(line)>0 and line[0] in commentCharacters
+
+def isContinuation(line):
+    return len(line)>5 and line[5] != ' ' and not isComment(line)
+
 def fixFortran(filename):
     allLines = []
     print "Processing %s"%filename
@@ -26,10 +32,10 @@ def fixFortran(filename):
 
     for lineno in range(0,len(allLines)):
         if lineno >= len(allLines): break
-        if allLines[lineno][0].lower() in commentCharacters:
-            print "Skipping comment line %d"%lineno
-            continue
-        while lineno < len(allLines) and len(allLines[lineno])>5 and allLines[lineno][5] != ' ':
+        if isComment(allLines[lineno]):
+                print "Skipping comment line %d"%lineno
+                continue
+        while lineno < len(allLines) and isContinuation(allLines[lineno]):
             l = allLines.pop(lineno)
             allLines[lineno-1] = allLines[lineno-1].rstrip() + l[6:72]
             print "Removed line %d and added it to the end of the preceding line"%(lineno)
