@@ -49,7 +49,7 @@ def fixFortran(filename):
         m = initRegex.search(line.rstrip())
         if m:
             print "Matched old-style initializer line"
-            newLine = "      %s%s :: %s = %s%s\n"%(m.group('type'), m.group('kind'), m.group('ident'), m.group('value'), m.group('tail'))
+            newLine = "      %s%s :: %s = %s%s\n"%(m.group('type'), m.group('kind') or "", m.group('ident'), m.group('value'), m.group('tail'))
             lines.append(newLine)
         else:
             lines.append(line)
