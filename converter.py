@@ -13,6 +13,8 @@ from fortranUtils import split_fortran_line_at_72, commentCharacters
 # This code attempts to fix various pieces of legacy Fortran which will not
 # otherwise compile with gfortran.
 
+joinLines = False
+
 def isComment(line):
     return len(line)>0 and line[0] in commentCharacters
 
@@ -68,20 +70,21 @@ def fixFortran(filename):
     allLines = f.readlines()
     f.close()
     print "%d lines read from file"%len(allLines)
-    # Rejoin all lines.
-    for lineno in range(0,len(allLines)):
-        allLines[lineno] = allLines[lineno][:72]
+    if joinLines:
+        # Rejoin all lines.
+        for lineno in range(0,len(allLines)):
+            allLines[lineno] = allLines[lineno][:72]
 
-    for lineno in range(0,len(allLines)):
-        if lineno >= len(allLines): break
-        if isComment(allLines[lineno]):
+        for lineno in range(0,len(allLines)):
+            if lineno >= len(allLines): break
+            if isComment(allLines[lineno]):
                 print "Skipping comment line %d"%lineno
                 continue
-        while lineno < len(allLines) and isContinuation(allLines[lineno]):
-            l = allLines.pop(lineno)
-            allLines[lineno-1] = allLines[lineno-1].rstrip() + l[6:72]
-            print "Removed line %d and added it to the end of the preceding line"%(lineno)
-    print "%d lines after rejoining"%len(allLines)
+            while lineno < len(allLines) and isContinuation(allLines[lineno]):
+                l = allLines.pop(lineno)
+                allLines[lineno-1] = allLines[lineno-1].rstrip() + l[6:72]
+                print "Removed line %d and added it to the end of the preceding line"%(lineno)
+        print "%d lines after rejoining"%len(allLines)
 
     # Process old-style initializers
     #allLines = fixOldStyleInitializers(allLines)
@@ -89,8 +92,11 @@ def fixFortran(filename):
 
     f = open(os.path.join(filename), 'wt')
     for l in allLines:
-        for sl in split_fortran_line_at_72(l):
-            f.write(sl)
+        if joinLines:
+            for sl in split_fortran_line_at_72(l):
+                f.write(sl)
+        else:
+            f.write(l)
     f.close()
 
 def getFortranFiles():
