@@ -56,10 +56,13 @@ def fixImplicitStatements(lines):
         l = lines[lineno]
         if implicitRegex.search(l.rstrip()):
             lines.pop(lineno)
-            lines.insert(insertPoint, l)
+            lines.insert(insertPoint, l) # Inserts before insertPoint
             print "Removed line from %d and inserted it at %d"%(lineno,insertPoint)
         elif programUnitStartRegex.search(l.rstrip()):
             insertPoint = lineno+1
+            # Advance until we are not before a continuation line.
+            while insertPoint < len(lines)-1 and isContinuation(lines[insertPoints+1]):
+                insertPoint += 1
             print "Insert point is now %d"%insertPoint
     return lines
 
