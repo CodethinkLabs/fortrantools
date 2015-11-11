@@ -19,7 +19,7 @@ def isComment(line):
     return len(line)>0 and line[0] in commentCharacters
 
 def isContinuation(line):
-    return len(line)>5 and line[5] != ' ' and not isComment(line)
+    return len(line)>5 and line[5] not in [' ','0'] and not isComment(line)
 
 def fixOldStyleInitializers(lines):
     initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/(?P<tail>\s*,.*$)')
@@ -61,7 +61,8 @@ def fixImplicitStatements(lines):
         elif programUnitStartRegex.search(l.rstrip()):
             insertPoint = lineno+1
             # Advance until we are not before a continuation line.
-            while insertPoint < len(lines)-1 and isContinuation(lines[insertPoints+1]):
+            while insertPoint < len(lines) and isContinuation(lines[insertPoint]):
+                print "Winding forward as %d is a continuation line."%(insertPoint)
                 insertPoint += 1
             print "Insert point is now %d"%insertPoint
     return lines
