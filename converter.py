@@ -67,6 +67,20 @@ def fixImplicitStatements(lines):
             print "Insert point is now %d"%insertPoint
     return lines
 
+def joinIncludes(lines):
+    includeRegex = re.compile('^\s+INCLUDE\s*$', re.IGNORECASE)
+    for lineno in range(0,len(lines)):
+        if lineno >= len(lines): break
+        l = lines[lineno]
+        if includeRegex.search(l.rstrip()):
+            print "Detected include on line %d"%lineno
+            while lineno < len(lines)-1 and isContinuation(lines[lineno+1]):
+                print "%d is a continuation"%(lineno+1)
+                c = lines.pop(lineno+1)[6:]
+                l = l.rstrip() + c
+            lines[lineno] = l
+    return lines
+
 def fixFortran(filename):
     allLines = []
     print "Processing %s"%filename
@@ -93,6 +107,7 @@ def fixFortran(filename):
     # Process old-style initializers
     #allLines = fixOldStyleInitializers(allLines)
     allLines = fixImplicitStatements(allLines)
+    allLines = joinIncludes(allLines)
 
     f = open(os.path.join(filename), 'wt')
     for l in allLines:
