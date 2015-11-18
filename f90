@@ -12,7 +12,7 @@ def main():
         exit(1)
 
     args = sys.argv[1:]
-    gccArgs = [ '-foracle-support' ]
+    gccArgs = [ '-foracle-support -foracle-support-experimental' ]
     while len(args)>0:
         arg = args.pop(0)
         if arg.startswith("-erroff="):
@@ -31,7 +31,8 @@ def main():
         elif arg == "-f77": pass
         elif arg == "-ftrap=%none": pass
         elif arg == "-f77=no%backslash": pass
-        elif arg == "-aligncommon=1": pass
+        elif arg == "-aligncommon=1":
+            gccArgs.append("-fno-align-commons")
         else:
             gccArgs.append(arg)
     command = [ gfortranBinary ]
