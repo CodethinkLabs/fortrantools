@@ -22,7 +22,8 @@ def isContinuation(line):
     return len(line)>5 and line[5] not in [' ','0'] and not isComment(line)
 
 def fixOldStyleInitializers(lines):
-    initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/(?P<tail>\s*,.*$)')
+#    initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/(?P<tail>\s*,.*$)')
+    initRegex = re.compile('(?P<type>INTEGER|LOGICAL|CHARACTER)(?P<kind>\*\(?\d+\)?)?\s+(?P<ident>\S+)\s*\/(?P<value>\S+)\/(?P<tail>\s*,.*)?$')
     oldDeclarationRegex = re.compile('(?P<ident>\S+)\s*\/(?P<value>\S+)\/')
     newLines = []
     for lineno in range(0,len(lines)):
@@ -33,16 +34,19 @@ def fixOldStyleInitializers(lines):
             newLine = "      %s%s :: %s = %s"%(m.group('type'), m.group('kind') or "", m.group('ident'), m.group('value'))
 
             # Check for further declarations
-            declarations = m.group('tail').split(",")
-            newDeclarations = []
-            for d in declarations:
-                print "checking subsequent declaration %s"%d
+	    if m.group('tail'):
+                declarations = m.group('tail').split(",")
+                newDeclarations = []
+                for d in declarations:
+                    print "checking subsequent declaration %s"%d
 
-                if oldDeclarationRegex.search(d):
-                    newDeclarations.append("%s = %s"%(m.group('ident'), m.group('value')))
-                else:
-                    newDeclarations.append(d)
-            newLines.append(newLine + ",".join(newDeclarations) + "\n")
+                    if oldDeclarationRegex.search(d):
+                        newDeclarations.append("%s = %s"%(m.group('ident'), m.group('value')))
+                    else:
+                        newDeclarations.append(d)
+                newLines.append(newLine + ",".join(newDeclarations) + "\n")
+	    else:
+                newLines.append(newLine+"\n")
         else:
             newLines.append(line)
     return newLines
@@ -105,7 +109,7 @@ def fixFortran(filename):
         print "%d lines after rejoining"%len(allLines)
 
     # Process old-style initializers
-    #allLines = fixOldStyleInitializers(allLines)
+    allLines = fixOldStyleInitializers(allLines)
     allLines = fixImplicitStatements(allLines)
     allLines = joinIncludes(allLines)
 
