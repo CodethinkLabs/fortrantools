@@ -67,6 +67,19 @@ def fixImplicitStatements(lines):
             print "Insert point is now %d"%insertPoint
     return lines
 
+def removeImplicitStatements(lines):
+    implicitRegex = re.compile('^\s+IMPLICIT NONE', re.IGNORECASE)
+    print "Removing IMPLICIT NONE statements..."
+    newlines = []
+    lineno = 1
+    for l in lines:
+        if not implicitRegex.search(l.rstrip()):
+            newlines.append(l)
+        else:
+            print "Removed IMPLICIT NONE line from %d"%lineno
+        lineno += 1
+    return newlines
+
 def joinIncludes(lines):
     includeRegex = re.compile('^\s+INCLUDE\s*$', re.IGNORECASE)
     for lineno in range(0,len(lines)):
@@ -106,7 +119,7 @@ def fixFortran(filename):
 
     # Process old-style initializers
     #allLines = fixOldStyleInitializers(allLines)
-    allLines = fixImplicitStatements(allLines)
+    allLines = removeImplicitStatements(allLines)
     allLines = joinIncludes(allLines)
 
     f = open(os.path.join(filename), 'wt')
