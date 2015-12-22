@@ -12,7 +12,7 @@ def main():
         exit(1)
 
     args = sys.argv[1:]
-    gccArgs = [ '-foracle-support','-foracle-support-experimental' ]
+    gccArgs = [ '-foracle-support','-foracle-support-experimental', -'fstd=extra-legacy' ]
     while len(args)>0:
         arg = args.pop(0)
         if arg.startswith("-erroff="):
