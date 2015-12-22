@@ -8,6 +8,6 @@ def split_fortran_line_at_72(line):
         return lines
     remain = line[72:]
     while len(remain)>0:
-        lines.append("     +" + remain[:66] +"\n")
+        lines.append("     !" + remain[:66] +"\n")
         remain = remain[66:]
     return lines
