@@ -3,6 +3,13 @@
 import os
 import sys
 
+################################################################################
+# This program is meant to be used in place of an existing Fortran compiler
+# called 'f90'. It translates some of the command line arguments into ones
+# which gfortran will understand and then execs gfortran from a location
+# hardcoded below. Since we can't usually modify the arguments passed to this
+# program by the build process, the gfortran binary location is hardcoded.
+
 gfortranBinary = "/home/jmacarthur7/gccinstall/bin/gfortran"
 
 def main():

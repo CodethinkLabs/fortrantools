@@ -15,6 +15,11 @@ from fortranUtils import split_fortran_line_at_72
 # the source code. It will then attempt to convert it to a more
 # standard-compliant form, with the aim of making it acceptable to gfortran.
 
+# To use this, generate a build using your existing fortran compiler with
+# warnings enabled and capture the error output to a file. This should be
+# supplied as stdin to this script; it will figure out the locations of files
+# issuing warnings and correct them.
+
 # Original code by Mark Doffman, maintained by Jim MacArthur.
 
 def main():

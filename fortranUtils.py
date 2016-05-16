@@ -1,3 +1,6 @@
+# These are common functions and definitions used by both
+# type-to-print and the converter script.
+
 commentCharacters = ['c', 'C', '!', '*']
 
 def split_fortran_line_at_72(line):

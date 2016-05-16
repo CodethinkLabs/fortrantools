@@ -13,6 +13,18 @@ from fortranUtils import split_fortran_line_at_72, commentCharacters
 ###############################################################################
 # This code attempts to fix various pieces of legacy Fortran which will not
 # otherwise compile with gfortran.
+# It will find all the files in the current directory (CWD) with an extension of
+# .f or .inc and attempt to process them.
+
+# There are four operations defined, of which only two are used
+
+# 1) Rewriting old style initializers as new ones
+# 2) Reordering of IMPLICIT NONE statements
+# 3) Removal of IMPLICIT NONE statements
+# 4) Joining of continued include lines into long include lines.
+
+# Of these, only 3) and 4) are used at the moment. See the README file for the
+# reasons behind this.
 
 joinLines = False
 
