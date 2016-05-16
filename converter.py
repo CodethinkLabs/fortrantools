@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import collections
 import fileinput
 import os
 import re
 import sys
+
 from os import listdir
 from os.path import isfile, join
 from fortranUtils import split_fortran_line_at_72, commentCharacters
