@@ -93,7 +93,15 @@ def removeImplicitStatements(lines):
         lineno += 1
     return newlines
 
+def replaceIncludeWithDirective(includeLine):
+    includeRegex = re.compile('^\s+INCLUDE\s*\'(\S+)\'$', re.IGNORECASE)
+    m = includeRegex.search(includeLine)
+    if m:
+        includeLine = "#include \"%s\"\n" % m.group(1)
+    return includeLine
+
 def joinIncludes(lines):
+    # Look for include statements that have no filename
     includeRegex = re.compile('^\s+INCLUDE\s*$', re.IGNORECASE)
     for lineno in range(0,len(lines)):
         if lineno >= len(lines): break
@@ -104,7 +112,11 @@ def joinIncludes(lines):
                 print "%d is a continuation"%(lineno+1)
                 c = lines.pop(lineno+1)[6:]
                 l = l.rstrip() + c
-            lines[lineno] = l
+            l = l.rstrip()
+            if len(l) > 72:
+                lines[lineno] = replaceIncludeWithDirective(l)
+            else:
+                lines[lineno] = l+"\n"
     return lines
 
 def fixFortran(filename):
