@@ -119,6 +119,19 @@ def joinIncludes(lines):
                 lines[lineno] = l+"\n"
     return lines
 
+def removeDebugComments(lines):
+    debugCommentRegex = re.compile('^D')
+    print "Removing debug ('D') comment lines..."
+    newlines = []
+    lineno = 1
+    for l in lines:
+        if not debugCommentRegex.search(l.rstrip()):
+            newlines.append(l)
+        else:
+            print "Removed debug comment line from %d"%lineno
+            lineno += 1
+    return newlines
+
 def fixFortran(filename):
     allLines = []
     print "Processing %s"%filename
@@ -146,6 +159,7 @@ def fixFortran(filename):
     #allLines = fixOldStyleInitializers(allLines)
     allLines = removeImplicitStatements(allLines)
     allLines = joinIncludes(allLines)
+    allLines = removeDebugComments(allLines)
 
     f = open(os.path.join(filename), 'wt')
     for l in allLines:
