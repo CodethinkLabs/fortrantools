@@ -19,7 +19,8 @@ def main():
         exit(1)
 
     args = sys.argv[1:]
-    gccArgs = [ '-std=extra-legacy', '-cpp' ]
+    gccArgs = [ '-std=extra-legacy', '-cpp',
+                '-fdec-structure', '-fno-range-check' ]
     while len(args)>0:
         arg = args.pop(0)
         if arg.startswith("-erroff="):
