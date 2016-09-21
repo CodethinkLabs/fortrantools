@@ -71,7 +71,7 @@ converter.py will join include statements followed by a continuation line into o
 * .xor. is allowed as an alias for .neqv.
 * Array references for multi-dimensional arrays can be omitted. For example, an array declared as
 
-    INTEGER chrbrd(8,8)
+    `INTEGER chrbrd(8,8)`
 
 ... can be used as "chsbrd(3)". This still returns a single INTEGER; the index for missing dimensions is always the lowest value for that dimension in this case.
 
@@ -80,14 +80,13 @@ converter.py will join include statements followed by a continuation line into o
 * Include lines which are longer than 72 characters are allowed.
 * You can specify a 'kind' for each variable declared in one statment. The following will now be accepted:
 
-    INTEGER*4 x*2, y*8
+    `INTEGER*4 x*2, y*8`
 
 * Basic support for old-style initializers inside derived types and structures.
 
-    LOGICAL*1      NIL      /0/
+    `LOGICAL*1      NIL      /0/`
 
 Only single-value expressions are supported at the moment.
-
 
 ## Relaxing of type conversion rules
 * Logicals can be automatically converted to integers in arithmetic operations.
