@@ -132,6 +132,14 @@ def removeDebugComments(lines):
             lineno += 1
     return newlines
 
+def convertXorToNeqv(lines):
+    xorRegex = re.compile('\.xor\.')
+    newlines = []
+    lineno = 1
+    for l in lines:
+        newlines.append(re.sub(xorRegex, l, '.neqv.'))
+    return newlines
+
 def fixFortran(filename):
     allLines = []
     print "Processing %s"%filename
@@ -160,6 +168,7 @@ def fixFortran(filename):
     allLines = removeImplicitStatements(allLines)
     allLines = joinIncludes(allLines)
     allLines = removeDebugComments(allLines)
+    allLines = convertXorToNeqv(allLines)
 
     f = open(os.path.join(filename), 'wt')
     for l in allLines:
