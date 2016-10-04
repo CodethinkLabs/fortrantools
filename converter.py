@@ -137,7 +137,7 @@ def convertXorToNeqv(lines):
     newlines = []
     lineno = 1
     for l in lines:
-        newlines.append(re.sub(xorRegex, l, '.neqv.'))
+        newlines.append(re.sub(xorRegex, '.neqv.', l))
     return newlines
 
 def fixFortran(filename):
